@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Data Space</title>
+
+  <meta name="author" content="Georgetown Data Science">
+  <meta name="keywords" content="machine learning, scikit-learn, data space">
+  <meta name="description" content="Machine learning in data space web demo.">
+
+  <!-- shortcut icon -->
+
+  <!-- stylesheets -->
+  <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link href="{{ url_for('static', filename='css/dataspace.css') }}" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <a class="navbar-brand" href="/">Data Space</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#aboutModal">
+              About
+            </a>
+          </li>
+          </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main role="main" class="container">
+    <!-- dataspace -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="border border-primary">
+          <!-- the data visualization canvas -->
+          <svg id="dataspace"></svg>
+        </div>
+      </div>
+    </div><!-- dataspace ends -->
+
+    <!-- controls -->
+    <div class="row mt-2">
+      <div class="col-md-6">
+        <form class="form-inline" id="dataEntryForm">
+          <label class="my-1 mr-2" for="classSelect">Add Points to Class</label>
+          <select class="custom-select my-1 mr-sm-2" id="classSelect">
+            <option value="0" selected>0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </form>
+      </div>
+      <div class="col-md-6">
+
+      </div>
+    </div><!-- controls ends -->
+  </main>
+
+  <footer class="footer bg-light">
+    <div class="container">
+      <span class="text-muted">
+        Made with &spades; by <a href="https://github.com/bbengfort">@bbengfort</a>
+        for the Georgetown Data Science Certificate
+      </span>
+      <span class="text-muted pull-right">For Demonstration Purposes Only.</span>
+    </div>
+  </footer>
+
+  <!-- modals -->
+  <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog"
+       aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="aboutModalLabel">About Data Space</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            In the tradition of Tkinter SVM GUI, the purpose of this website is to demonstrate how
+            machine learning model forms are affected by the shape of the underlying dataset. By
+            selecting a dataset or by creating one of your own, you can fit a model to the data
+            and see how the model would make decisions based on the data it has been trained on.
+            Although this is a toy example, hopefully it helps give you the intuition that the
+            machine learning process is a model selection search for the best combination of features,
+            algorithm, and hyperparameter that generalize well in a bounded feature space.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- javascript at the bottom of the page for faster loading -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"
+    integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+    integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='js/dataspace.js') }}"></script>
+
+  <!-- google analytics -->
+</body>
+</html>
