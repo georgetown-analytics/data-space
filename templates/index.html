@@ -66,10 +66,22 @@
             <option value="2">2</option>
             <option value="3">3</option>
           </select>
+          <button class="btn btn-primary" id="resetBtn">Reset</button>
         </form>
       </div>
       <div class="col-md-6">
-
+        <form class="form-inline pull-right" id="datasetForm">
+          <label class="my-1 mr-2" for="generator">Generate Dataset</label>
+          <select class="custom-select my-1 mr-sm-2" name="generator">
+            <option selected>&hellip;</option>
+            <option value="moons">Moons</option>
+            <option value="circles">Circles</option>
+            <option value="blobs">Blobs</option>
+            <option value="binary">Binary</option>
+            <option value="multiclass">Multiclass</option>
+          </select>
+          <button type="submit" class="btn btn-primary" id="createBtn">Generate</button>
+        </form>
       </div>
     </div><!-- controls ends -->
   </main>
@@ -120,7 +132,8 @@
     integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
     integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js" charset="utf-8"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/d3-fetch"></script>
   <script src="{{ url_for('static', filename='js/dataspace.js') }}"></script>
 
   <!-- google analytics -->
