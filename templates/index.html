@@ -45,8 +45,17 @@
   </header>
 
   <main role="main" class="container">
-    <!-- dataspace -->
+    <!--result -->
     <div class="row">
+      <div class="col mb-0">
+        <p class="invisible text-right mb-0 pb-0" id="metrics">
+          F1 Score: <span id="f1score"></span>
+        </p>
+      </div>
+    </div>
+
+    <!-- dataspace -->
+    <div class="row mt-0">
       <div class="col-md-12">
         <div class="border border-primary">
           <!-- the data visualization canvas -->
@@ -55,10 +64,21 @@
       </div>
     </div><!-- dataspace ends -->
 
-    <!-- controls -->
+    <!-- data controls -->
     <div class="row mt-2">
-      <div class="col-md-6">
-        <form class="form-inline" id="dataEntryForm">
+      <div class="col-md-4">
+        <form class="form-inline" id="modelSelectForm">
+          <label class="my-1 mr-2" for="modelSelect">Select Model Family</label>
+          <select class="custom-select my-1 mr-sm-2" id="modelSelect" role="tablist">
+            <option value="bayes" role="tab">Naive Bayes</option>
+            <option value="svm" role="tab">SVM</option>
+            <option value="logit" role="tab">Logistic</option>
+          </select>
+          <button class="btn btn-primary" id="fitBtn">Fit</button>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <form class="form-inline justify-content-center" id="dataEntryForm">
           <label class="my-1 mr-2" for="classSelect">Add Points to Class</label>
           <select class="custom-select my-1 mr-sm-2" id="classSelect">
             <option value="0" selected>0</option>
@@ -66,10 +86,10 @@
             <option value="2">2</option>
             <option value="3">3</option>
           </select>
-          <button class="btn btn-primary" id="resetBtn">Reset</button>
+          <button class="btn btn-secondary" id="resetBtn">Reset</button>
         </form>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <form class="form-inline pull-right" id="datasetForm">
           <label class="my-1 mr-2" for="generator">Generate Dataset</label>
           <select class="custom-select my-1 mr-sm-2" name="generator">
@@ -83,7 +103,40 @@
           <button type="submit" class="btn btn-primary" id="createBtn">Generate</button>
         </form>
       </div>
-    </div><!-- controls ends -->
+      <div class="clearfix"></div>
+    </div><!-- data controls ends -->
+
+    <!-- model controls -->
+    <div class="row mt-2">
+      <div class="tab-content" id="modelTabs">
+        <div class="tab-pane fade show active" id="bayes" role="tabpanel">
+          <div class="col">
+            <p>Naive Bayes</p>
+            <form class="form">
+              <input type="hidden" name="model" value="bayes" />
+            </form>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="svm" role="tabpanel">
+          <div class="col">
+            <p>Support Vector Machine</p>
+            <form class="form">
+              <input type="hidden" name="model" value="svm" />
+            </form>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="logit" role="tabpanel">
+          <div class="col">
+            <p>Logistic Regression</p>
+            <form class="form">
+              <input type="hidden" name="model" value="logit" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div><!-- model controls ends -->
+
+
   </main>
 
   <footer class="footer bg-light">
@@ -133,6 +186,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
     integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3-contour.v1.min.js"></script>
   <script src="https://unpkg.com/d3-fetch"></script>
   <script src="{{ url_for('static', filename='js/dataspace.js') }}"></script>
 

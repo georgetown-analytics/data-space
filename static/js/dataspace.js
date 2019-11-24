@@ -68,10 +68,35 @@ class Dataspace {
         });
     }
 
+    // Fit the model specified in the data fields to the data in the plot
+    fit(model) {
+        if (this.dataset.length == 0) {
+            console.log("cannot fit model to no data!");
+            return
+        }
+
+        var data = {
+            model: model,
+            dataset: this.dataset,
+        }
+
+        d3.json("/fit", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+          }
+        }).then(json => {
+          $("#f1score").text(json.metrics.f1);
+          $("#metrics").removeClass("invisible").addClass("visible");
+        });
+    }
+
     // Reset the plotting area
     reset() {
         this.dataset = [];
         this.svg.selectAll("circle").remove();
+        $("#metrics").removeClass("visible").addClass("invisible");
     }
 
 }
@@ -111,5 +136,29 @@ $(document).ready(function() {
         app.fetch(data);
         return false;
     })
+
+    // Change the model hyperparameter tabs on select
+    $("select#modelSelect").change(function(e) {
+        e.preventDefault();
+        $('#modelTabs [class*="active"]').removeClass("show active");
+
+        var model = $(e.target).val();
+        $("#"+model).addClass("show active");
+        return false;
+    })
+
+    // Display the model when the fit button is clicked
+    $("button#fitBtn").click(function(e) {
+        e.preventDefault();
+
+        var form = $('#modelTabs [class*="active"] form');
+        var data = form.serializeArray().reduce(function(obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+
+        app.fit(data);
+        return false;
+    });
 
 });

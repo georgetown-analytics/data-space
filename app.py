@@ -21,8 +21,14 @@ A quick Flask app to demonstrate Machine Learning decision space.
 from flask import Flask
 from flask import render_template, jsonify, request
 
+from numpy import asarray
 from functools import partial
+
+from sklearn.svm import SVC
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import precision_recall_fscore_support as prfs
 from sklearn.datasets import make_blobs, make_circles, make_moons, make_classification
 
 
@@ -74,6 +80,42 @@ def generate():
     ]
     return jsonify(data)
 
+
+@app.route("/fit", methods=["POST"])
+def fit():
+    # TODO: test content type and send 400 if not JSON
+    # Construct the model fit request
+    data = request.get_json()
+    params = data.get("model", {})
+    dataset = data.get("dataset", [])
+    model = {
+        'bayes': MultinomialNB(),
+        'svm': SVC(),
+        'logit': LogisticRegression(),
+    }.get(params.pop("model", None), None)
+
+    # Validate the request is correct and sane
+    if model is None or len(dataset) == 0:
+        return "invalid fit request", 400
+
+    # Set the hyperparameters on the model
+    model.set_params(**params)
+
+    # Construct the dataset
+    X, y = [], []
+    for point in dataset:
+        X.append([point["x"], point["y"]])
+        y.append(point["c"])
+    X, y = asarray(X), asarray(y)
+
+    # Fit the model to the dataset and get the training score
+    model.fit(X, y)
+    yhat = model.predict(X)
+    metrics = prfs(y, yhat, average="macro")
+
+    return jsonify({
+        "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics))
+    })
 
 ##########################################################################
 ## Run the Web App
