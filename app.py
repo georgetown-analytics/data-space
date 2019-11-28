@@ -18,6 +18,8 @@ A quick Flask app to demonstrate Machine Learning decision space.
 ## Imports
 ##########################################################################
 
+import json
+
 from flask import Flask
 from flask import render_template, jsonify, request
 
@@ -25,10 +27,10 @@ from numpy import asarray
 from functools import partial
 
 from sklearn.svm import SVC
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_recall_fscore_support as prfs
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
 from sklearn.datasets import make_blobs, make_circles, make_moons, make_classification
 
 
@@ -65,12 +67,16 @@ def generate():
     # TODO: test content type and send 400 if not JSON
     data = request.get_json()
     generator = {
+        '…': None, None: None, "": None,
         'binary': make_binary,
         'multiclass': make_multiclass,
         'blobs': make_blobs,
         'circles': make_circles,
         'moons': make_moons,
-    }[data.get("generator", "binary")]
+    }[data.get("generator", None)]
+
+    if generator is None:
+        return "invalid generate request: unspecified data generator", 400
 
     X, y = generator()
     X = MinMaxScaler().fit_transform(X)
@@ -89,14 +95,24 @@ def fit():
     params = data.get("model", {})
     dataset = data.get("dataset", [])
     model = {
-        'bayes': MultinomialNB(),
+        'gaussiannb': GaussianNB(),
+        'multinomialnb': MultinomialNB(),
+        'bernoullinb': BernoulliNB(),
+        'complementnb': ComplementNB(),
         'svm': SVC(),
         'logit': LogisticRegression(),
     }.get(params.pop("model", None), None)
 
     # Validate the request is correct and sane
     if model is None or len(dataset) == 0:
-        return "invalid fit request", 400
+        return "invalid fit request: please specify model and data", 400
+
+    try:
+        params = {
+            key: json.loads(val) for key, val in params.items()
+        }
+    except json.decoder.JSONDecodeError:
+        return "invalid fit request: cannot parse json hyperparameters", 400
 
     # Set the hyperparameters on the model
     model.set_params(**params)

@@ -4,6 +4,23 @@ const margin = {top: 10, right: 10, bottom: 10, left: 10};
 var app = null;
 var currentClass = 0;
 
+// Displays a danger alert message in the top of the screen.
+function alertMessage(message) {
+  var alert = $('<div class="alert alert-danger alert-dismissible fade show mb-0 mt-0" role="alert">');
+  var btnClose = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close">');
+  var x = $.parseHTML('<span aria-hidden="true">&times;</span>');
+
+  alert.text(message);
+  btnClose.append(x);
+  alert.append(btnClose);
+
+  $("#alerts").append(alert);
+
+  setTimeout(function() {
+    alert.alert('close');
+    alert.alert('dispose');
+  }, 2000);
+}
 
 class Dataspace {
     constructor(selector) {
@@ -65,11 +82,15 @@ class Dataspace {
         }).then(json => {
             this.dataset = json;
             this.draw();
+        }).catch(error => {
+          console.log(error);
+          alertMessage("Server could not generate dataset!");
         });
     }
 
     // Fit the model specified in the data fields to the data in the plot
     fit(model) {
+        $("#metrics").removeClass("visible").addClass("invisible");
         if (this.dataset.length == 0) {
             console.log("cannot fit model to no data!");
             return
@@ -89,6 +110,8 @@ class Dataspace {
         }).then(json => {
           $("#f1score").text(json.metrics.f1);
           $("#metrics").removeClass("invisible").addClass("visible");
+        }).catch(error => {
+          alertMessage("Could not fit model, check JSON hyperparams and try again!");
         });
     }
 
@@ -137,17 +160,24 @@ $(document).ready(function() {
         return false;
     })
 
-    // Change the model hyperparameter tabs on select
+    // Change the model hyperparameter tabs on select and set the current model family.
     $("select#modelSelect").change(function(e) {
         e.preventDefault();
+        // Deactivate current model control form tab
         $('#modelTabs [class*="active"]').removeClass("show active");
 
+        // Activate the selected model control form tab
         var model = $(e.target).val();
         $("#"+model).addClass("show active");
+
+        // Ensure that the info button points to the currect model
+      $("#infoBtn").attr("data-target", "#" + model + "InfoModal");
+
         return false;
     })
 
-    // Display the model when the fit button is clicked
+    // POST the active model control form when the fit button is clicked then render
+    // the model contours and score (along with any other model-visualizations).
     $("button#fitBtn").click(function(e) {
         e.preventDefault();
 
@@ -157,8 +187,53 @@ $(document).ready(function() {
             return obj;
         }, {});
 
+        // Add unchecked checkboxes and change checkboxes to true/false
+        form.find('input[type="checkbox"]').each(function() {
+          var cb = $(this);
+          if (!cb.prop("disabled")) {
+            data[cb.attr("name")] = cb.prop("checked").toString();
+          }
+        });
+
+        console.log(data);
         app.fit(data);
         return false;
+    });
+
+    // Enable the correct hyperparameters based on the selected naive bayes model
+    $('#bayes input[name="model"]').change(function(e) {
+
+      // Disable all of the form controls except for the radios
+      $('#bayes input[type="text"').prop("disabled", true);
+      $('#bayes input[type="checkbox"').prop("disabled", true);
+
+      // Enable based on the model ID
+      switch($(this).val()) {
+        case "gaussiannb":
+          $('#bayes input[name="priors"]').prop("disabled", false);
+          $('#bayes input[name="var_smoothing"]').prop("disabled", false);
+          break
+        case "multinomialnb":
+          $('#bayes input[name="alpha"]').prop("disabled", false);
+          $('#bayes input[name="class_prior"]').prop("disabled", false);
+          $('#bayes input[name="fit_prior"]').prop("disabled", false);
+          break;
+        case "bernoullinb":
+          $('#bayes input[name="alpha"]').prop("disabled", false);
+          $('#bayes input[name="binarize"]').prop("disabled", false);
+          $('#bayes input[name="class_prior"]').prop("disabled", false);
+          $('#bayes input[name="fit_prior"]').prop("disabled", false);
+          break;
+        case "complementnb":
+          $('#bayes input[name="alpha"]').prop("disabled", false);
+          $('#bayes input[name="class_prior"]').prop("disabled", false);
+          $('#bayes input[name="fit_prior"]').prop("disabled", false);
+          $('#bayes input[name="norm"]').prop("disabled", false);
+          break;
+        default:
+          console.log("unknown bayesian model selected, cannot enable form!");
+      }
+
     });
 
 });

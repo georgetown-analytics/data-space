@@ -45,9 +45,14 @@
   </header>
 
   <main role="main" class="container">
+    <!-- alerts -->
+    <div class="row">
+      <div class="col" id="alerts"></div>
+    </div>
+
     <!--result -->
     <div class="row">
-      <div class="col mb-0">
+      <div class="col-md-12 mb-0">
         <p class="invisible text-right mb-0 pb-0" id="metrics">
           F1 Score: <span id="f1score"></span>
         </p>
@@ -74,7 +79,10 @@
             <option value="svm" role="tab">SVM</option>
             <option value="logit" role="tab">Logistic</option>
           </select>
-          <button class="btn btn-primary" id="fitBtn">Fit</button>
+          <button type="button" class="btn btn-primary mr-1" id="fitBtn">Fit</button>
+          <button type="button" class="btn btn-info" id="infoBtn" data-toggle="modal" data-target="#bayesInfoModal">
+            <i class="fa fa-info"></i>
+          </button>
         </form>
       </div>
       <div class="col-md-4">
@@ -86,7 +94,7 @@
             <option value="2">2</option>
             <option value="3">3</option>
           </select>
-          <button class="btn btn-secondary" id="resetBtn">Reset</button>
+          <button type="reset" class="btn btn-secondary" id="resetBtn">Reset</button>
         </form>
       </div>
       <div class="col-md-4">
@@ -107,32 +115,98 @@
     </div><!-- data controls ends -->
 
     <!-- model controls -->
-    <div class="row mt-2">
-      <div class="tab-content" id="modelTabs">
-        <div class="tab-pane fade show active" id="bayes" role="tabpanel">
-          <div class="col">
-            <p>Naive Bayes</p>
+    <div class="row mt-4">
+      <div class="col">
+        <div class="tab-content" id="modelTabs">
+          <div class="tab-pane fade show active" id="bayes" role="tabpanel">
             <form class="form">
-              <input type="hidden" name="model" value="bayes" />
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="model" id="nbmodel1" value="gaussiannb" checked>
+                    <label class="form-check-label" for="nbmodel1">
+                      GaussianNB
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="model" id="nbmodel2" value="multinomialnb">
+                    <label class="form-check-label" for="nbmodel2">
+                      MultinomialNB
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="model" id="nbmodel3" value="bernoullinb">
+                    <label class="form-check-label" for="nbmodel3">
+                      BernoulliNB
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="model" id="nbmodel4" value="complementnb">
+                    <label class="form-check-label" for="nbmodel4">
+                      ComplementNB
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="alpha" class="col-form-label col-md-4">Alpha</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="alpha" id="alpha" value="1.0" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="binarize" class="col-form-label col-md-4">Binarize</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="binarize" id="binarize" value="0.0" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="var_smoothing" class="col-form-label col-md-4">Smoothing</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="var_smoothing" id="var_smoothing" value="1e-09" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="fit_prior" id="fit_prior" checked disabled>
+                    <label class="form-check-label" for="fit_prior">Fit Prior</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="norm" id="norm" disabled>
+                    <label class="form-check-label" for="norm">Norm</label>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group form-row mb-1">
+                    <label for="class_prior" class="col-form-label col-md-3">Class Prior</label>
+                    <div class="col-md-9">
+                      <input class="form-control" type="text" name="class_prior" id="class_prior" value="null" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="priors" class="col-form-label col-md-3">Priors</label>
+                    <div class="col-md-9">
+                      <input class="form-control" type="text" name="priors" id="priors" value="null" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
-        </div>
-        <div class="tab-pane fade" id="svm" role="tabpanel">
-          <div class="col">
+          <div class="tab-pane fade" id="svm" role="tabpanel">
             <p>Support Vector Machine</p>
             <form class="form">
               <input type="hidden" name="model" value="svm" />
             </form>
           </div>
-        </div>
-        <div class="tab-pane fade" id="logit" role="tabpanel">
-          <div class="col">
+          <div class="tab-pane fade" id="logit" role="tabpanel">
             <p>Logistic Regression</p>
             <form class="form">
               <input type="hidden" name="model" value="logit" />
             </form>
           </div>
-        </div>
+        </div><!-- model tabs ends -->
       </div>
     </div><!-- model controls ends -->
 
@@ -177,6 +251,68 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="bayesInfoModal" tabindex="-1" role="dialog" aria-labelledby="bayesInfoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bayesInfoModalLabel">Naive Bayes</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>TODO</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="svmInfoModal" tabindex="-1" role="dialog" aria-labelledby="svmInfoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="svmInfoModalLabel">Support Vector Machines</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>TODO</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="logitInfoModal" tabindex="-1" role="dialog" aria-labelledby="logitInfoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logitInfoModalLabel">Logistic Regression</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>TODO</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end modals -->
 
   <!-- javascript at the bottom of the page for faster loading -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
