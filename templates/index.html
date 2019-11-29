@@ -254,7 +254,7 @@
 
   <div class="modal fade" id="bayesInfoModal" tabindex="-1" role="dialog" aria-labelledby="bayesInfoModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="bayesInfoModalLabel">Naive Bayes</h5>
@@ -263,7 +263,56 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>TODO</p>
+          <p>
+            <a href="https://scikit-learn.org/stable/modules/naive_bayes.html" target="_blank">
+            Naive Bayesian models</a> are a collection of supervised classification algorithms
+            that apply Bayes rule of conditional probability with the "naive" assumption
+            of conditional independence between all pairs of features given the value.
+            Bayesian predictions are based on the conditional likelihood of the joint
+            probability of all features and the target class. Becasue features are treated
+            like likelihoods, the primary difference of each classifier is the assumptions
+            they make about the distrubition of the features.
+          </p>
+
+          <ul class="list-unstyled">
+            <li>
+            <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" target="_blank">
+            GaussianNB </a>: Assumes the likelihood of features is Gaussian, e.g. a range of infinite values.
+            </li>
+            <li>
+            <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html#sklearn.naive_bayes.MultinomialNB" target="_blank">
+            MultinomialNB</a>: Features are treated as a finite number of discrete events measured as a multinomial distribution.
+            </li>
+            <li>
+            <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html#sklearn.naive_bayes.BernoulliNB" target="_blank">
+            BernoulliNB</a>: Features are distributed according to multivariate Bernoulli disribution: e.g. features are either 1 or 0.
+            </li>
+            <li>
+            <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.ComplementNB.html#sklearn.naive_bayes.ComplementNB" target="_blank">
+            ComplementNB</a>: A modification of MultinomialNB where the class complement is used - good for class imbalance.
+            </li>
+          </ul>
+
+          <h6>Hyperparameters</h6>
+          <dl>
+            <dt>Priors/Class Prior &middot; <code>array-like shape (n_classes,)</code></dt>
+            <dd>Prior probabilities of the classes. If specified the priors are not adjusted according to the data. (Not used with ComplementNB)</dd>
+
+            <dt>Smoothing &middot; <code>float</code></dt>
+            <dd>Portion of the largest variance of all features that is added to variances for calculation stability.</dd>
+
+            <dt>Alpha &middot; <code>float</code></dt>
+            <dd>Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).</dd>
+
+            <dt>Fit Prior &middot; <code>bool</code></dt>
+            <dd>Whether to learn class prior probabilities or not. If false, a uniform prior will be used.</dd>
+
+            <dt>Binarize &middot; <code>float or None</code></dt>
+            <dd>Threshold for binarizing (mapping to booleans) of sample features. If None, input is presumed to already consist of binary vectors.</dd>
+
+            <dt>Norm &middot; <code>bool</code></dt>
+            <dd>Whether or not a second normalization of the weights is performed.</dd>
+          </dl>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
