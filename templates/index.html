@@ -198,9 +198,102 @@
             </form>
           </div>
           <div class="tab-pane fade" id="svm" role="tabpanel">
-            <p>Support Vector Machine</p>
             <form class="form">
               <input type="hidden" name="model" value="svm" />
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="kernel" id="svmkernel1" value="linear" checked>
+                    <label class="form-check-label" for="svmkernel1">
+                      Linear
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="kernel" id="svmkernel2" value="poly">
+                    <label class="form-check-label" for="svmkernel2">
+                      Polynomial
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="kernel" id="svmkernel3" value="rbf">
+                    <label class="form-check-label" for="svmkernel3">
+                      RBF
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="kernel" id="svmkernel4" value="sigmoid">
+                    <label class="form-check-label" for="svmkernel4">
+                      Sigmoid
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="C" class="col-form-label col-md-4">C</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="C" id="C" value="1.0" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="degree" class="col-form-label col-md-4">Degree</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="number" name="degree" id="degree" value="3" min="1" max="42" step="1" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="gamma" class="col-form-label col-md-4">Gamma</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="gamma" id="gamma" value="scale" disabled />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="coef0" class="col-form-label col-md-4">Coef0</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="coef0" id="coef0" value="0.0" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="tol" class="col-form-label col-md-4">Tol</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="tol" id="tol" value="0.001" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="max_iter" class="col-form-label col-md-4">Max Iter</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="max_iter" id="max_iter" value="-1" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group form-row mb-1">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="shrinking" id="shrinking" checked>
+                        <label class="form-check-label" for="shrinking">Shrinking</label>
+                      </div>
+                      </div>
+                    </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="class_weight" class="col-form-label col-md-4">Class Weight</label>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" name="class_weight" id="class_weight" value="null" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="decision_function_shape" class="col-form-label col-md-4">Decision Shape</label>
+                    <div class="col-md-8">
+                      <select class="custom-select my-1 mr-sm-2" name="decision_function_shape" id="decision_function_shape">
+                        <option value="ovr" selected>One v. Rest</option>
+                        <option value="ovo">One v. One</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
           <div class="tab-pane fade" id="logit" role="tabpanel">
@@ -326,7 +419,7 @@
 
   <div class="modal fade" id="svmInfoModal" tabindex="-1" role="dialog" aria-labelledby="svmInfoModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="svmInfoModalLabel">Support Vector Machines</h5>
@@ -335,7 +428,55 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>TODO</p>
+          <p>
+            <a href="https://scikit-learn.org/stable/modules/svm.html" target="_blank">
+            Support vector machines</a> are supervised, discriminitive classifiers that learn
+            an optimal hyperplane that can separate and categorize data. This hyperplane
+            (e.g. an defined space one dimension less than the ambient space) maximizes
+            the distance between groups of classes by selecting support vectors from each
+            group (potentially with some slack) then finding the parallel hyperplane between
+            those vectors that is halfway between the orthogonal. To optimize support vector
+            discovery, the kernel functions are used to find mappings that increase the space
+            between points, increasing separability between classes.
+          </p>
+          <h6>Hyperparameters</h6>
+          <dl>
+            <dt>C <code>float</code></dt>
+            <dd>Penalty parameter C of the error term.</dd>
+            <dt>kernel <code>string</code></dt>
+            <dd>
+              Specifies the kernel type to be used in the algorithm. It must be one of ‘linear’, ‘poly’,
+              ‘rbf’, ‘sigmoid’, ‘precomputed’ or a callable. If none is given, ‘rbf’ will be used. If a
+              callable is given it is used to pre-compute the kernel matrix from data matrices; that
+              matrix should be an array of shape <code>(n_samples, n_samples)</code>.
+            </dd>
+            <dt>degree <code>int</code></dt>
+            <dd>Degree of the polynomial kernel function (‘poly’). Ignored by all other kernels.</dd>
+            <dt>gamma <code>float</code></dt>
+            <dd>Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’.</dd>
+            <dt>coef0 <code>float</code></dt>
+            <dd>Independent term in kernel function. It is only significant in ‘poly’ and ‘sigmoid’.</dd>
+            <dt>shrinking <code>boolean</code></dt>
+            <dd>Whether to use the shrinking heuristic.</dd>
+            <dt>tol <code>float</code></dt>
+            <dd>Tolerance for stopping criterion.</dd>
+            <dt>class_weight <code>{dict, 'balanced'}</code></dt>
+            <dd>
+              Set the parameter C of class i to class_weight[i]*C for SVC. If not given, all classes are
+              supposed to have weight one. The “balanced” mode uses the values of y to automatically adjust
+              weights inversely proportional to class frequencies in the input data as
+              <code>n_samples / (n_classes * np.bincount(y))</code>
+            </dd>
+            <dt>max_iter <code>int</code></dt>
+            <dd>Hard limit on iterations within solver, or -1 for no limit.</dd>
+            <dt>decision_function_shape <code>{‘ovo’, ‘ovr’}</code></dt>
+            <dd>
+              Whether to return a one-vs-rest (‘ovr’) decision function of shape <code>(n_samples, n_classes)</code>
+              as all other classifiers, or the original one-vs-one (‘ovo’) decision function of libsvm which has shape
+              <code>(n_samples, n_classes * (n_classes - 1) / 2)</code>. However, one-vs-one (‘ovo’) is always used
+              as multi-class strategy.
+            </dd>
+          </dl>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -346,7 +487,7 @@
 
   <div class="modal fade" id="logitInfoModal" tabindex="-1" role="dialog" aria-labelledby="logitInfoModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="logitInfoModalLabel">Logistic Regression</h5>
@@ -356,6 +497,12 @@
         </div>
         <div class="modal-body">
           <p>TODO</p>
+
+          <h6>Hyperparameters</h6>
+          <dl>
+            <dt>param <code>type</code></dt>
+            <dd>description</dd>
+          </dl>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -48,7 +48,7 @@ class Dataspace {
             .data(self.dataset)
             .enter()
             .append("circle")
-                .attr('cx', function (d) { console.log(d); return self.xScale(d.x); })
+                .attr('cx', function (d) { return self.xScale(d.x); })
                 .attr('cy', function (d) { return self.yScale(d.y); })
                 .attr('fill', function (d) { return self.color(d.c); })
                 .attr('r', radius);
@@ -191,11 +191,11 @@ $(document).ready(function() {
         form.find('input[type="checkbox"]').each(function() {
           var cb = $(this);
           if (!cb.prop("disabled")) {
-            data[cb.attr("name")] = cb.prop("checked").toString();
+            data[cb.attr("name")] = JSON.stringify(cb.prop("checked"));
           }
         });
 
-        console.log(data);
+        console.log("fitting model with params: ", data);
         app.fit(data);
         return false;
     });
@@ -235,5 +235,39 @@ $(document).ready(function() {
       }
 
     });
+
+  // Enable the correct hyperparameters based on the selected svm kernel
+  $('#svm input[name="kernel"]').change(function (e) {
+    var degree = $('#svm input[name="degree"]');
+    var gamma = $('#svm input[name="gamma"]');
+    var coef0 = $('#svm input[name="coef0"]');
+
+    // Enable/Disable based on the selected kernel
+    switch ($(this).val()) {
+      case "linear":
+        $.each([degree, gamma, coef0], function (_, elem) {
+          elem.prop("disabled", true);
+        });
+        break;
+      case "poly":
+        $.each([degree, gamma, coef0], function (_, elem) {
+          elem.prop("disabled", false);
+        });
+        break;
+      case "rbf":
+        degree.prop("disabled", true);
+        gamma.prop("disabled", false);
+        coef0.prop("disabled", true);
+        break;
+      case "sigmoid":
+        degree.prop("disabled", true);
+        gamma.prop("disabled", false);
+        coef0.prop("disabled", false);
+        break;
+      default:
+        console.log("unknown SVM kernel selected, cannot enable form!");
+    }
+
+  });
 
 });

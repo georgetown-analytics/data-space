@@ -107,15 +107,18 @@ def fit():
     if model is None or len(dataset) == 0:
         return "invalid fit request: please specify model and data", 400
 
-    try:
-        params = {
-            key: json.loads(val) for key, val in params.items()
-        }
-    except json.decoder.JSONDecodeError:
-        return "invalid fit request: cannot parse json hyperparameters", 400
+    # Parse the JSON hyperparameters or leave as string for type detection
+    for key in params.keys():
+        try:
+            params[key] = json.loads(params[key])
+        except json.decoder.JSONDecodeError:
+            continue
 
     # Set the hyperparameters on the model
-    model.set_params(**params)
+    try:
+        model.set_params(**params)
+    except ValueError as e:
+        return str(e), 400
 
     # Construct the dataset
     X, y = [], []
