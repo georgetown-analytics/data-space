@@ -122,6 +122,16 @@ class Dataspace {
         $("#metrics").removeClass("visible").addClass("invisible");
     }
 
+    // Count the number of classes in the dataset
+    classes() {
+      return this.dataset.reduce(function(acc, val) {
+        if (!acc.includes(val.c)) {
+          acc.push(val.c);
+        }
+        return acc;
+      }, []);
+    }
+
 }
 
 $(document).ready(function() {
@@ -268,6 +278,84 @@ $(document).ready(function() {
         console.log("unknown SVM kernel selected, cannot enable form!");
     }
 
+  });
+
+  // Enable the correct hyperparameters based on the selected logistic solver
+  $('#logit select[name="solver"]').change(function(e) {
+
+    // Disable all the penalties
+    $('#logit input[name="penalty"]').each(function(_, elem) {
+      $(elem).prop("disabled", true);
+    });
+
+    // Disable dual -- this only works with liblinear and l2
+    $('#logit input[name="dual"]').prop("disabled", true);
+
+    // Disable intercept_scaling -- this only works with liblinear and fit_intercept=True
+    $('#logit input[name="intercept_scaling"]').prop("disabled", true);
+
+    // Disable l1_ratio -- this only works with SAGA and penalty=elasticnet
+    $('#logit input[name="l1_ratio"]').prop("disabled", true);
+
+    // Enable/Disable based on the selected penalty
+    switch ($(this).val()) {
+      case "newton-cg":
+      case "sag":
+      case "lbfgs":
+        $('#logit input[name="penalty"]#penalty2').prop("disabled", false);
+        $('#logit input[name="penalty"]#penalty4').prop("disabled", false);
+        break;
+      case "liblinear":
+        $('#logit input[name="penalty"]').each(function (_, elem) {
+          elem = $(elem);
+          if (elem.val() != 'none' && elem.val() != 'elasticnet') {
+            elem.prop("disabled", false);
+          }
+        });
+        if ($('#logit input[name="penalty"]:checked').val() == 'l2') {
+          $('#logit input[name="dual"]').prop("disabled", false);
+        }
+        if ($('#logit input[name="penalty"]:checked').val() == 'elasticnet') {
+          $('#logit input[name="l1_ratio"]').prop("disabled", false);
+        }
+        $('#logit input[name="intercept_scaling"]').prop("disabled", false);
+        break;
+      case "saga":
+        $('#logit input[name="penalty"]').each(function (_, elem) {
+          $(elem).prop("disabled", false);
+        });
+        break;
+      default:
+        console.log("unknown solver selected, cannot enable form!");
+    }
+
+  })
+
+  // Enable the correct hyperparameters based on the selected logistic penalty
+  $('#logit input[name="penalty"]').change(function(e) {
+    // Disable dual -- this only works with liblinear and l2
+    $('#logit input[name="dual"]').prop("disabled", true);
+
+    // Disable l1_ratio -- this only works with elasticnet
+    $('#logit input[name="l1_ratio"]').prop("disabled", true);
+
+    // Enable/Disable based on the selected kernel
+    switch ($(this).val()) {
+      case "l1":
+        break
+      case "l2":
+        if ($('#logit select[name="solver"]').val() == "liblinear") {
+          $('#logit input[name="dual"]').prop("disabled", false);
+        }
+        break
+      case "elasticnet":
+        $('#logit input[name="l1_ratio"]').prop("disabled", false);
+      case "none":
+        break
+      default:
+        console.log($(this).val());
+        console.log("unknown penalty, cannot correctly enable form!");
+    }
   });
 
 });

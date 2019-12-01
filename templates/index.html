@@ -284,7 +284,7 @@
                     </div>
                   </div>
                   <div class="form-group form-row mb-1">
-                    <label for="decision_function_shape" class="col-form-label col-md-4">Decision Shape</label>
+                    <label for="decision_function_shape" class="col-form-label col-md-4 my-1">Decision Shape</label>
                     <div class="col-md-8">
                       <select class="custom-select my-1 mr-sm-2" name="decision_function_shape" id="decision_function_shape">
                         <option value="ovr" selected>One v. Rest</option>
@@ -297,9 +297,118 @@
             </form>
           </div>
           <div class="tab-pane fade" id="logit" role="tabpanel">
-            <p>Logistic Regression</p>
             <form class="form">
               <input type="hidden" name="model" value="logit" />
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="solver" class="col-form-label col-md-4">Solver</label>
+                    <div class="col-md-8">
+                      <select class="custom-select my-1 mr-sm-2" name="solver" id="solver">
+                        <option value="newton-cg">Newton-CG</option>
+                        <option value="lbfgs">LBFGS</option>
+                        <option value="liblinear" selected>LibLinear</option>
+                        <option value="sag">SAG</option>
+                        <option value="saga">SAGA</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="penalty" class="col-form-label col-md-4">Penalty</label>
+                    <div class="col-md-8">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="penalty" id="penalty1" value="l1">
+                        <label class="form-check-label" for="penalty1">
+                          L1
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="penalty" id="penalty2" value="l2" checked>
+                        <label class="form-check-label" for="penalty2">
+                          L2
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="penalty" id="penalty3" value="elasticnet" disabled>
+                        <label class="form-check-label" for="penalty3">
+                          ElasticNet
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="penalty" id="penalty4" value="none" disabled>
+                        <label class="form-check-label" for="penalty4">
+                          None
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="C" class="col-form-label col-md-5">C</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="text" name="C" id="C" value="1.0" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="intercept_scaling" class="col-form-label col-md-5">Scale Intercept</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="text" name="intercept_scaling" id="intercept_scaling" value="1.0" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="l1_ratio" class="col-form-label col-md-5">L1 Ratio</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="text" name="l1_ratio" id="l1_ratio" value="0.5" disabled />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="fit_intercept" id="fit_intercept" checked>
+                        <label class="form-check-label" for="fit_intercept">Fit Intercept</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="dual" id="dual">
+                        <label class="form-check-label" for="dual">Dual</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="multi_class" class="col-form-label col-md-4 my-1">Multi-Class</label>
+                    <div class="col-md-8">
+                      <select class="custom-select my-1 mr-sm-2" name="multi_class" id="multi_class">
+                        <option value="auto" selected>Auto</option>
+                        <option value="ovr">One v. Rest</option>
+                        <option value="multinomial">Multinomial</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group form-row mb-1">
+                    <label for="class_weight" class="col-form-label col-md-5">Class Weight</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="text" name="class_weight" id="class_weight" value="null" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="tol" class="col-form-label col-md-5">Tol</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="text" name="tol" id="tol" value="0.0001" />
+                    </div>
+                  </div>
+                  <div class="form-group form-row mb-1">
+                    <label for="max_iter" class="col-form-label col-md-5">Max Iter</label>
+                    <div class="col-md-7">
+                      <input class="form-control" type="number" name="max_iter" id="max_iter" value="100" step="10" min="10" max="10000" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div><!-- model tabs ends -->
@@ -441,35 +550,35 @@
           </p>
           <h6>Hyperparameters</h6>
           <dl>
-            <dt>C <code>float</code></dt>
+            <dt>C &middot; <code>float</code></dt>
             <dd>Penalty parameter C of the error term.</dd>
-            <dt>kernel <code>string</code></dt>
+            <dt>kernel &middot; <code>{'linear', 'poly', 'rbf', 'sigmoid', 'precomputed', None}</code></dt>
             <dd>
-              Specifies the kernel type to be used in the algorithm. It must be one of ‘linear’, ‘poly’,
-              ‘rbf’, ‘sigmoid’, ‘precomputed’ or a callable. If none is given, ‘rbf’ will be used. If a
-              callable is given it is used to pre-compute the kernel matrix from data matrices; that
+              Specifies the kernel type to be used in the algorithm. It must be one of the string
+              choices or a callable. If None is given, ‘rbf’ will be used. If a callable is given
+              it is used to pre-compute the kernel matrix from data matrices; that
               matrix should be an array of shape <code>(n_samples, n_samples)</code>.
             </dd>
-            <dt>degree <code>int</code></dt>
+            <dt>degree &middot; <code>int</code></dt>
             <dd>Degree of the polynomial kernel function (‘poly’). Ignored by all other kernels.</dd>
-            <dt>gamma <code>float</code></dt>
+            <dt>gamma &middot; <code>float</code></dt>
             <dd>Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’.</dd>
-            <dt>coef0 <code>float</code></dt>
+            <dt>coef0 &middot; <code>float</code></dt>
             <dd>Independent term in kernel function. It is only significant in ‘poly’ and ‘sigmoid’.</dd>
-            <dt>shrinking <code>boolean</code></dt>
+            <dt>shrinking &middot; <code>boolean</code></dt>
             <dd>Whether to use the shrinking heuristic.</dd>
-            <dt>tol <code>float</code></dt>
+            <dt>tol &middot; <code>float</code></dt>
             <dd>Tolerance for stopping criterion.</dd>
-            <dt>class_weight <code>{dict, 'balanced'}</code></dt>
+            <dt>class_weight &middot; <code>{dict, 'balanced'}</code></dt>
             <dd>
               Set the parameter C of class i to class_weight[i]*C for SVC. If not given, all classes are
               supposed to have weight one. The “balanced” mode uses the values of y to automatically adjust
               weights inversely proportional to class frequencies in the input data as
               <code>n_samples / (n_classes * np.bincount(y))</code>
             </dd>
-            <dt>max_iter <code>int</code></dt>
+            <dt>max_iter &middot; <code>int</code></dt>
             <dd>Hard limit on iterations within solver, or -1 for no limit.</dd>
-            <dt>decision_function_shape <code>{‘ovo’, ‘ovr’}</code></dt>
+            <dt>decision_function_shape &middot; <code>{‘ovo’, ‘ovr’}</code></dt>
             <dd>
               Whether to return a one-vs-rest (‘ovr’) decision function of shape <code>(n_samples, n_classes)</code>
               as all other classifiers, or the original one-vs-one (‘ovo’) decision function of libsvm which has shape
@@ -496,12 +605,65 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>TODO</p>
+          <p>
+            <a href="https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression" target="_blank">
+            Logistic Regression</a> is a supervised classification algorithm that models the probabilities
+            describing the possible outcome (class) of a single trial using a logistic function. This method
+            is also known as a logit regression, maximum-entropy classifier, or log-linear classifier.
+          </p>
 
           <h6>Hyperparameters</h6>
           <dl>
-            <dt>param <code>type</code></dt>
-            <dd>description</dd>
+            <dt>penalty &middot; <code>{'l1', 'l2', 'elasticnet', 'none'}</code></dt>
+            <dd>
+              Used to specify the norm used in the penalization. The ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers
+              support only l2 penalties. ‘elasticnet’ is only supported by the ‘saga’ solver. If ‘none’ (not
+              supported by the liblinear solver), no regularization is applied.
+            </dd>
+            <dt>dual &middot; <code>bool</code></dt>
+            <dd>
+              Dual or primal formulation. Dual formulation is only implemented for l2 penalty with liblinear
+              solver. Prefer <code>dual=False</code> when <code>n_samples > n_features</code>.
+            </dd>
+            <dt>tol &middot; <code>float</code></dt>
+            <dd>Tolerance for stopping criteria.</dd>
+            <dt>C &middot; <code>float</code></dt>
+            <dd>
+              Inverse of regularization strength; must be a positive float. Like in support vector machines,
+              smaller values specify stronger regularization.
+            </dd>
+            <dt>fit_intercept &middot; <code>bool</code></dt>
+            <dd>Specifies if a constant (a.k.a. bias or intercept) should be added to the decision function.</dd>
+            <dt>intercept_scaling &middot; <code>float</code></dt>
+            <dd>
+              Useful only when the solver ‘liblinear’ is used and self.fit_intercept is set to True. In this case,
+              x becomes <code>[x, self.intercept_scaling]</code>, i.e. a “synthetic” feature with constant value
+              equal to intercept_scaling is appended to the instance vector.
+            </dd>
+            <dt>class_weight &middot; <code>{dict, 'balanced'}</code></dt>
+            <dd>
+              Weights associated with classes in the form {class_label: weight}. If not given, all classes are
+              supposed to have weight one. The “balanced” mode uses the values of y to automatically adjust weights
+              inversely proportional to class frequencies in the input data as
+              <code>n_samples / (n_classes * np.bincount(y)).</code>
+            </dd>
+            <dt>solver &middot; <code>{'newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'}</code></dt>
+            <dd>Algorithm to use in the optimization problem.</dd>
+            <dt>max_iter &middot; <code>int</code></dt>
+            <dd>Maximum number of iterations taken for the solvers to converge.</dd>
+            <dt>multi_class &middot; <code>{'ovr', 'multinomial', 'auto'}</code></dt>
+            <dd>
+              If the option chosen is ‘ovr’, then a binary problem is fit for each label. For ‘multinomial’ the
+              loss minimised is the multinomial loss fit across the entire probability distribution, even when the
+              data is binary. ‘multinomial’ is unavailable when solver=’liblinear’. ‘auto’ selects ‘ovr’ if the
+              data is binary, or if solver=’liblinear’, and otherwise selects ‘multinomial’.
+            </dd>
+            <dt>l1_ratio &middot; <code>float</code></dt>
+            <dd>
+              The Elastic-Net mixing parameter, with <code>0 <= l1_ratio <=1</code>. Only used if <code>penalty='elasticnet'</code>.
+              Setting <code>l1_ratio=0</code> is equivalent to using <code>penalty='l2'</code>, while setting <code>l1_ratio=1</code>
+              is equivalent to using <code>penalty='l1'</code>. For <code>0 < l1_ratio < 1</code>, the penalty is a combination of L1 and L2.
+            </dd>
           </dl>
         </div>
         <div class="modal-footer">
