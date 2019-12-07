@@ -135,13 +135,17 @@ def fit():
     metrics = prfs(y, yhat, average="macro")
 
     # Make probability predictions on the grid to implement contours
+    # The returned value is the class index + the probability
+    # To get the selected class in JavaScript, use Math.floor(p)
+    # Where p is the probability returned by the grid. Note that this
+    # method guarantees that no P(c) == 1 to prevent class misidentification
     Xp = asarray([
         [point["x"], point["y"]] for point in grid
     ])
     preds = []
     for proba in model.predict_proba(Xp):
         c = np.argmax(proba)
-        preds.append(float(c+proba[c]))
+        preds.append(float(c+proba[c])-0.000001)
 
     return jsonify({
         "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics)),

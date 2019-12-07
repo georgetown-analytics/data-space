@@ -127,8 +127,19 @@ class Dataspace {
             self.grid[i] = val;
           })
 
-          var thresholds = self.classes().map(i => d3.range(i, i + 1, 0.25)).flat().sort();
-          console.log(thresholds);
+          // Compute the thresholds from the classes, then compute the colors
+          var thresholds = self.classes().map(i => d3.range(i, i + 1, 0.1)).flat().sort();
+          var colorMap = {}
+          $.each(self.classes(), c => {
+            colorMap[c] = d3.scaleLinear().domain([c, c+1])
+              .interpolate(d3.interpolateHcl)
+              .range(["#FFFFFF", self.color(c)])
+          });
+
+          var getColor = d => {
+            console.log(d.value)
+            return colorMap[Math.floor(d.value)](d.value)
+          }
 
           // Add the contours from the predictions for each class
           var contours = d3.contours()
@@ -146,7 +157,7 @@ class Dataspace {
             .selectAll("path")
             .data(contours) // Here is where the contours gets added
             .join("path")
-            .attr("fill", d => self.color(Math.floor(d.value))) // Here is the color value!
+            .attr("fill", getColor) // Here is the color value!
               .style("opacity", 0.85)
               .attr("d", d3.geoPath());
 
