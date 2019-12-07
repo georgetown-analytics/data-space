@@ -24,48 +24,49 @@ function alertMessage(message) {
 
 class Dataspace {
     constructor(selector) {
-        this.svg = d3.select(selector);
-        this.$svg = $(selector);
-        this.dataset = [];
+      this.svg = d3.select(selector);
+      this.$svg = $(selector);
+      this.dataset = [];
+      this.grid = null;
 
-        // drawing properties are hardcoded for now
-        this.width = this.$svg.width();
-        this.height = this.$svg.height();
-        this.color = d3.scaleOrdinal(d3.schemeCategory10);
+      // drawing properties are hardcoded for now
+      this.width = this.$svg.width();
+      this.height = this.$svg.height();
+      this.color = d3.scaleOrdinal(d3.schemeCategory10);
 
-        this.xScale = d3.scaleLinear()
-            .domain([0, 1])
-            .range([margin.left, this.width - margin.right]);
+      this.xScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([margin.left, this.width - margin.right]);
 
-        this.yScale = d3.scaleLinear()
-            .domain([0, 1])
-            .range([margin.top, this.height - margin.bottom])
+      this.yScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([margin.top, this.height - margin.bottom])
     }
 
     draw() {
         var self = this;
         self.svg.selectAll("circle")
-            .data(self.dataset)
-            .enter()
-            .append("circle")
-                .attr('cx', function (d) { return self.xScale(d.x); })
-                .attr('cy', function (d) { return self.yScale(d.y); })
-                .attr('fill', function (d) { return self.color(d.c); })
-                .attr('r', radius);
+          .data(self.dataset)
+          .enter()
+          .append("circle")
+            .attr('cx', function (d) { return self.xScale(d.x); })
+            .attr('cy', function (d) { return self.yScale(d.y); })
+            .attr('fill', function (d) { return self.color(d.c); })
+            .attr('r', radius);
     }
 
     // Add raw data point (e.g. where x and y are between 0 and 1)
     addPoint(point) {
-        this.dataset.push(point);
-        this.draw();
+      this.dataset.push(point);
+      this.draw();
     }
 
     // Add coordinates data point (e.g. where x and y are in the svg)
     addCoords(coords) {
         var point = {
-            x: this.xScale.invert(coords[0]),
-            y: this.yScale.invert(coords[1]),
-            c: currentClass
+          x: this.xScale.invert(coords[0]),
+          y: this.yScale.invert(coords[1]),
+          c: currentClass
         };
         this.addPoint(point);
     }
@@ -74,14 +75,14 @@ class Dataspace {
     fetch(data) {
         this.reset();
         d3.json("/generate", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            }
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+          }
         }).then(json => {
-            this.dataset = json;
-            this.draw();
+          this.dataset = json;
+          this.draw();
         }).catch(error => {
           console.log(error);
           alertMessage("Server could not generate dataset!");
@@ -92,17 +93,18 @@ class Dataspace {
     fit(model) {
         $("#metrics").removeClass("visible").addClass("invisible");
         if (this.dataset.length == 0) {
-            console.log("cannot fit model to no data!");
-            return
+          console.log("cannot fit model to no data!");
+          return
         }
 
         // The contours grid determines what to make predictions on.
         // TODO: don't pass this to the server but allow the server to compute it.
-        var grid = this.contoursGrid()
+        var self = this;
+        self.grid = this.contoursGrid()
         var data = {
-            model: model,
-            dataset: this.dataset,
-            grid: grid
+          model: model,
+          dataset: self.dataset,
+          grid: self.grid,
         }
 
         d3.json("/fit", {
@@ -112,30 +114,34 @@ class Dataspace {
             "Content-Type": "application/json; charset=UTF-8"
           }
         }).then(json => {
+          // Reset the old contours
+          this.svg.selectAll("g").remove();
+
+          // Update the metrics
           $("#f1score").text(json.metrics.f1);
           $("#metrics").removeClass("invisible").addClass("visible");
 
-          // Update the gird with the predictions values.
+          // Update the grid with the predictions values.
           $.each(json.grid, function(i, val) {
-            grid[i] = val;
+            self.grid[i] = val;
           })
 
           // Add the contours from the predictions for each class
           var contours = d3.contours()
-              .size([grid.n, grid.m])
-              .thresholds(this.classes())
-            (grid)
-              .map(grid.transform)
+              .size([self.grid.n, self.grid.m])
+            .thresholds(self.classes())
+            (self.grid)
+              .map(self.grid.transform)
 
           // Draw the contours on the SVG
-          this.svg.insert("g", ":first-child")
+          self.svg.insert("g", ":first-child")
               .attr("fill", "none")
               .attr("stroke", "#fff")
               .attr("stroke-opacity", 0.65)
             .selectAll("path")
             .data(contours) // Here is where the contours gets added
             .join("path")
-              .attr("fill", d => this.color(d.value)) // Here is the color value!
+            .attr("fill", d => self.color(d.value)) // Here is the color value!
               .style("opacity", 0.45)
               .attr("d", d3.geoPath());
 
@@ -146,10 +152,10 @@ class Dataspace {
 
     // Reset the plotting area
     reset() {
-        this.dataset = [];
-        this.svg.selectAll("circle").remove();
-        this.svg.selectAll("g").remove();
-        $("#metrics").removeClass("visible").addClass("invisible");
+      this.dataset = [];
+      this.svg.selectAll("circle").remove();
+      this.svg.selectAll("g").remove();
+      $("#metrics").removeClass("visible").addClass("invisible");
     }
 
     // Count the number of classes in the dataset
