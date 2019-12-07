@@ -19,6 +19,7 @@ A quick Flask app to demonstrate Machine Learning decision space.
 ##########################################################################
 
 import json
+import numpy as np
 
 from flask import Flask
 from flask import render_template, jsonify, request
@@ -133,15 +134,18 @@ def fit():
     yhat = model.predict(X)
     metrics = prfs(y, yhat, average="macro")
 
-    # Make predictions on the grid
+    # Make probability predictions on the grid to implement contours
     Xp = asarray([
         [point["x"], point["y"]] for point in grid
     ])
-    preds = model.predict(Xp)
+    preds = []
+    for proba in model.predict_proba(Xp):
+        c = np.argmax(proba)
+        preds.append(float(c+proba[c]))
 
     return jsonify({
         "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics)),
-        "grid": [int(v) for v in preds],
+        "grid": preds,
     })
 
 ##########################################################################

@@ -52,6 +52,7 @@ class Dataspace {
             .attr('cx', function (d) { return self.xScale(d.x); })
             .attr('cy', function (d) { return self.yScale(d.y); })
             .attr('fill', function (d) { return self.color(d.c); })
+            .attr("stroke", "#FFFFFF")
             .attr('r', radius);
     }
 
@@ -100,7 +101,7 @@ class Dataspace {
         // The contours grid determines what to make predictions on.
         // TODO: don't pass this to the server but allow the server to compute it.
         var self = this;
-        self.grid = this.contoursGrid()
+        self.grid = self.contoursGrid()
         var data = {
           model: model,
           dataset: self.dataset,
@@ -115,7 +116,7 @@ class Dataspace {
           }
         }).then(json => {
           // Reset the old contours
-          this.svg.selectAll("g").remove();
+          self.svg.selectAll("g").remove();
 
           // Update the metrics
           $("#f1score").text(json.metrics.f1);
@@ -126,26 +127,31 @@ class Dataspace {
             self.grid[i] = val;
           })
 
+          var thresholds = self.classes().map(i => d3.range(i, i + 1, 0.25)).flat().sort();
+          console.log(thresholds);
+
           // Add the contours from the predictions for each class
           var contours = d3.contours()
               .size([self.grid.n, self.grid.m])
-            .thresholds(self.classes())
+              .thresholds(thresholds)
+              .smooth(true)
             (self.grid)
               .map(self.grid.transform)
 
           // Draw the contours on the SVG
           self.svg.insert("g", ":first-child")
               .attr("fill", "none")
-              .attr("stroke", "#fff")
+              .attr("stroke", "#FFFFFF")
               .attr("stroke-opacity", 0.65)
             .selectAll("path")
             .data(contours) // Here is where the contours gets added
             .join("path")
-            .attr("fill", d => self.color(d.value)) // Here is the color value!
-              .style("opacity", 0.45)
+            .attr("fill", d => self.color(Math.floor(d.value))) // Here is the color value!
+              .style("opacity", 0.85)
               .attr("d", d3.geoPath());
 
         }).catch(error => {
+          console.log(error);
           alertMessage("Could not fit model, check JSON hyperparams and try again!");
         });
     }
