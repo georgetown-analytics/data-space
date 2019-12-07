@@ -94,6 +94,7 @@ def fit():
     data = request.get_json()
     params = data.get("model", {})
     dataset = data.get("dataset", [])
+    grid = data.get("grid", [])
     model = {
         'gaussiannb': GaussianNB(),
         'multinomialnb': MultinomialNB(),
@@ -132,8 +133,15 @@ def fit():
     yhat = model.predict(X)
     metrics = prfs(y, yhat, average="macro")
 
+    # Make predictions on the grid
+    Xp = asarray([
+        [point["x"], point["y"]] for point in grid
+    ])
+    preds = model.predict(Xp)
+
     return jsonify({
-        "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics))
+        "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics)),
+        "grid": [int(v) for v in preds],
     })
 
 ##########################################################################

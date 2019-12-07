@@ -96,9 +96,13 @@ class Dataspace {
             return
         }
 
+        // The contours grid determines what to make predictions on.
+        // TODO: don't pass this to the server but allow the server to compute it.
+        var grid = this.contoursGrid()
         var data = {
             model: model,
             dataset: this.dataset,
+            grid: grid
         }
 
         d3.json("/fit", {
@@ -110,6 +114,31 @@ class Dataspace {
         }).then(json => {
           $("#f1score").text(json.metrics.f1);
           $("#metrics").removeClass("invisible").addClass("visible");
+
+          // Update the gird with the predictions values.
+          $.each(json.grid, function(i, val) {
+            grid[i] = val;
+          })
+
+          // Add the contours from the predictions for each class
+          var contours = d3.contours()
+              .size([grid.n, grid.m])
+              .thresholds(this.classes())
+            (grid)
+              .map(grid.transform)
+
+          // Draw the contours on the SVG
+          this.svg.insert("g", ":first-child")
+              .attr("fill", "none")
+              .attr("stroke", "#fff")
+              .attr("stroke-opacity", 0.65)
+            .selectAll("path")
+            .data(contours) // Here is where the contours gets added
+            .join("path")
+              .attr("fill", d => this.color(d.value)) // Here is the color value!
+              .style("opacity", 0.45)
+              .attr("d", d3.geoPath());
+
         }).catch(error => {
           alertMessage("Could not fit model, check JSON hyperparams and try again!");
         });
@@ -119,6 +148,7 @@ class Dataspace {
     reset() {
         this.dataset = [];
         this.svg.selectAll("circle").remove();
+        this.svg.selectAll("g").remove();
         $("#metrics").removeClass("visible").addClass("invisible");
     }
 
@@ -130,6 +160,46 @@ class Dataspace {
         }
         return acc;
       }, []);
+    }
+
+    // Create the contours grid to pass to the predict function.
+    contoursGrid() {
+      var self = this;
+      const q = 4;
+      const x0 = -q / 2, x1 = this.width + margin.right + q;
+      const y0 = -q / 2, y1 = this.height + q;
+      const n = Math.ceil((x1-x0) / q);
+      const m = Math.ceil((y1-y0) / q);
+      const grid = new Array(n*m);
+      grid.x = -q;
+      grid.y = -q;
+      grid.k = q;
+      grid.n = n;
+      grid.m = m;
+
+      // Converts from grid coordinates (indexes) to screen coordinates (pixels).
+      grid.transform = ({ type, value, coordinates }) => {
+        return {
+          type, value, coordinates: coordinates.map(rings => {
+            return rings.map(points => {
+              return points.map(([x, y]) => ([
+                grid.x + grid.k * x,
+                grid.y + grid.k * y
+              ]));
+            });
+          })
+        };
+      }
+
+      // We just have to pass the x and y values to the server to predict them using the model, then the rest of the code is the sames?
+      for (let j = 0; j < m; ++j) {
+        for (let i = 0; i < n; ++i) {
+          var obj = { x: this.xScale.invert(i * q + x0), y: this.yScale.invert(j * q + y0) };
+          grid[j * grid.n + i] = obj;
+        }
+      }
+
+      return grid;
     }
 
 }
