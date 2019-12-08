@@ -200,6 +200,7 @@
           <div class="tab-pane fade" id="svm" role="tabpanel">
             <form class="form">
               <input type="hidden" name="model" value="svm" />
+              <input type="hidden" name="probability" value="true" />
               <div class="row">
                 <div class="col-md-2">
                   <div class="form-check">
@@ -445,6 +446,7 @@
             machine learning model forms are affected by the shape of the underlying dataset. By
             selecting a dataset or by creating one of your own, you can fit a model to the data
             and see how the model would make decisions based on the data it has been trained on.
+            The fitted contours display the highest likelihoods of the class the model would select.
             Although this is a toy example, hopefully it helps give you the intuition that the
             machine learning process is a model selection search for the best combination of features,
             algorithm, and hyperparameter that generalize well in a bounded feature space.
