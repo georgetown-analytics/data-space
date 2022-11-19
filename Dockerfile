@@ -1,6 +1,7 @@
 # Dynamic Builds
-ARG BUILDER_IMAGE=python:3.8-slim-buster
-ARG FINAL_IMAGE=python:3.8-slim-buster
+ARG BUILDER_IMAGE=python:3.11-slim-buster
+ARG FINAL_IMAGE=python:3.11-slim-buster
+ARG GIT_REVISION=""
 
 # Build Stage
 FROM ${BUILDER_IMAGE} AS builder
@@ -22,7 +23,7 @@ RUN flake8 --ignore=E501,F401,E266 .
 
 # Build dependencies into wheels
 COPY ./requirements.txt .
-RUN python3 -m pip install numpy==1.16.4 cython
+RUN python3 -m pip install numpy==1.23.4 cython
 RUN python3 -m pip wheel --no-cache-dir --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 # Final Stage
