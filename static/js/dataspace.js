@@ -224,10 +224,22 @@ class Dataspace {
 
       return grid;
     }
+}
 
+function versionCheck() {
+  $.get("/status").then((data) => {
+    console.log(data);
+    if (data.status == 'ok') {
+      $("#versionStatus").removeClass("text-danger").addClass("text-success");
+      $("#versionInfo").text(data.version);
+    }
+  });
 }
 
 $(document).ready(function() {
+    // Perform version check
+    versionCheck();
+
     // Create the dataspace app
     app = new Dataspace("#dataspace");
 
