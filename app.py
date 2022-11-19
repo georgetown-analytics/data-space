@@ -26,6 +26,7 @@ from flask import render_template, jsonify, request
 
 from numpy import asarray
 from functools import partial
+from datetime import datetime
 
 from sklearn.svm import SVC
 from sklearn.preprocessing import MinMaxScaler
@@ -51,6 +52,9 @@ make_multiclass = partial(make_classification, n_samples=256, n_features=2, n_re
 ##########################################################################
 
 app = Flask(__name__)
+
+version = "v1.1.0"
+started = datetime.now()
 
 
 ##########################################################################
@@ -150,6 +154,15 @@ def fit():
     return jsonify({
         "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics)),
         "grid": preds,
+    })
+
+
+@app.route("/status", methods=["GET"])
+def status():
+    return jsonify({
+        "status": "ok",
+        "version": version,
+        "uptime": (datetime.now() - started).total_seconds(),
     })
 
 
