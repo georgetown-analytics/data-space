@@ -1,6 +1,7 @@
 # Dynamic Builds
-ARG BUILDER_IMAGE=python:3.8-slim-buster
-ARG FINAL_IMAGE=python:3.8-slim-buster
+ARG BUILDER_IMAGE=python:3.11-slim-buster
+ARG FINAL_IMAGE=python:3.11-slim-buster
+ARG GIT_REVISION=""
 
 # Build Stage
 FROM ${BUILDER_IMAGE} AS builder

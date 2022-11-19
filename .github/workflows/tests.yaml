@@ -1,0 +1,30 @@
+name: Tests
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+
+jobs:
+  lint:
+    name: Flake8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Flake8
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install flake8
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Lint Python Code
+        run: flake8 --ignore=E501,F401,E266 .
