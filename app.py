@@ -56,6 +56,7 @@ app = Flask(__name__)
 version = "v1.1.0"
 started = datetime.now()
 
+
 ##########################################################################
 ## Routes
 ##########################################################################
@@ -161,7 +162,7 @@ def status():
     return jsonify({
         "status": "ok",
         "version": version,
-        "uptime": (datetime.now()-started).total_seconds(),
+        "uptime": (datetime.now() - started).total_seconds(),
     })
 
 
