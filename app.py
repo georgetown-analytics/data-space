@@ -145,12 +145,13 @@ def fit():
     preds = []
     for proba in model.predict_proba(Xp):
         c = np.argmax(proba)
-        preds.append(float(c+proba[c])-0.000001)
+        preds.append(float(c + proba[c]) - 0.000001)
 
     return jsonify({
         "metrics": dict(zip(["precision", "recall", "f1", "support"], metrics)),
         "grid": preds,
     })
+
 
 ##########################################################################
 ## Run the Web App
