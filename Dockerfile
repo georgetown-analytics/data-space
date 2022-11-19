@@ -23,7 +23,7 @@ RUN flake8 --ignore=E501,F401,E266 .
 
 # Build dependencies into wheels
 COPY ./requirements.txt .
-RUN python3 -m pip install numpy==1.16.4 cython
+RUN python3 -m pip install numpy==1.23.4 cython
 RUN python3 -m pip wheel --no-cache-dir --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 # Final Stage
