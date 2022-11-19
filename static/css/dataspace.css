@@ -17,6 +17,10 @@ body {
     line-height: 60px;
 }
 
+#versionStatus {
+    margin-right: 2px;
+}
+
 body > .container {
     padding: 40px 15px 0;
 }
